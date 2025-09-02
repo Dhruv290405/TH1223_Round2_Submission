@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     min: 0,
   },
 
-  aadhaarNumber: { // optional for identity
+  aadhaarNumber: {
     type: String,
     unique: true,
     sparse: true,
@@ -41,10 +41,26 @@ const userSchema = new mongoose.Schema({
     pincode: String,
   },
 
-  // Digital Pass Information
+  // 🔑 Time Slot Info
+  timeSlot: {
+    checkIn: {
+      type: Date,
+      required: true, // assigned when registering
+    },
+    checkOut: {
+      type: Date,
+      required: true, // exit deadline (2–3 hr slot etc.)
+    },
+    extended: {
+      type: Boolean,
+      default: false, // true if user paid penalty & extended stay
+    },
+  },
+
+  // Digital Pass Reference
   pass: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Pass", // links to pass collection
+    ref: "Pass",
     default: null,
   },
 
@@ -58,7 +74,7 @@ const userSchema = new mongoose.Schema({
   // Alert Preferences
   preferredLanguage: {
     type: String,
-    enum: ["hi", "en", "mr", "gu", "bn", "ta", "te"], // Hindi, English, etc.
+    enum: ["hi", "en", "mr", "gu", "bn", "ta", "te"],
     default: "hi",
   },
 
@@ -72,7 +88,7 @@ const userSchema = new mongoose.Schema({
     default: true,
   },
 
-  // Real-Time Tracking (optional, from entry gates/IoT)
+  // Real-Time Tracking
   currentZone: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Zone",
@@ -85,10 +101,7 @@ const userSchema = new mongoose.Schema({
     default: "active",
   },
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
 }, { timestamps: true });
 
 export default mongoose.model("User", userSchema);
+
