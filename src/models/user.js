@@ -1,5 +1,5 @@
 // models/User.js
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -7,32 +7,21 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-
-  gender: {
-    type: String,
-    enum: ["male", "female", "other"],
-  },
-
-  age: {
-    type: Number,
-    min: 0,
-  },
-
   aadhaarNumber: {
     type: String,
+    required:true,
     unique: true,
     sparse: true,
   },
-
   phone: {
     type: String,
     required: true,
   },
-
-  email: {
-    type: String,
-    lowercase: true,
-  },
+  
+  // email: {
+  //   type: String,
+  //   lowercase: true,
+  // },
 
   address: {
     state: String,
@@ -41,7 +30,6 @@ const userSchema = new mongoose.Schema({
     pincode: String,
   },
 
-  // 🔑 Time Slot Info
   timeSlot: {
     checkIn: {
       type: Date,
@@ -49,7 +37,12 @@ const userSchema = new mongoose.Schema({
     },
     checkOut: {
       type: Date,
-      required: true, // exit deadline (2–3 hr slot etc.)
+      required: true,
+      deadline:()=>{
+        const now = this.checkIn;
+        const endDate = new Date(now + 3*24*60*60*1000);  // ise directly endDate set ho jayega
+        return endDate;
+      } // exit deadline (2–3 days slot etc.)
     },
     extended: {
       type: Boolean,
@@ -62,6 +55,9 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Pass",
     default: null,
+  },
+  MembersAadhar:{
+        type:[String]
   },
 
   // Accommodation Booking
@@ -89,11 +85,11 @@ const userSchema = new mongoose.Schema({
   // },
 
   // Real-Time Tracking
-  currentZone: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Zone",
-    default: null,
-  },
+  // currentZone: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Zone",
+  //   default: null,
+  // },
 
   status: {
     type: String,
@@ -103,4 +99,4 @@ const userSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-export default mongoose.model("User", userSchema);
+module.exports =  mongoose.model("User", userSchema);
