@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
     pincode: String,
   },
 
+    selectedGhat: {
+    type: String,
+    required: true,
+    enum: ['Har Ki Pauri', 'Subhash Ghat', 'Chandi Ghat'] // add more ghats as needed
+  },
+
   timeSlot: {
     checkIn: {
       type: Date,
@@ -49,12 +55,30 @@ const userSchema = new mongoose.Schema({
       default: false, // true if user paid penalty & extended stay
     },
   },
-
+  verificationStatus: {
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    verifiedAt: {
+      type: Date,
+      default: null
+    },
+    verifiedAtGhat: {
+      type: String,
+      default: null
+    }
+  },
   // Digital Pass Reference
   pass: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Pass",
-    default: null,
+    token: {
+        type: String,
+        default: null
+    },
+    qrCode: {
+        type: String,
+        default: null
+    }
   },
   MembersAadhar:{
         type:[String]
